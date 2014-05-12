@@ -1,0 +1,10 @@
+{
+    "name": "jsGameLib",
+    "version": "0.0.1",
+    "description": "A game library",
+    "devDependencies": {
+        "browserify": "~2.29.1",
+        "express": "~3.3.3",
+        "through": "~2.3.4"
+    }
+}
