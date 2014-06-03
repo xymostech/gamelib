@@ -44,7 +44,11 @@ Transform.prototype.toString = function transformPrint() {
     return "translation: " + translation.toString() + " angle: " + angle;
 };
 
-window.Transform = Transform;
-window.Vector2 = Vector2;
+Transform.prototype.apply = function transformApply(ctx) {
+    ctx.setTransform(
+        this.matrix.mat[0][0], this.matrix.mat[0][1],
+        this.matrix.mat[1][0], this.matrix.mat[1][1],
+        this.matrix.mat[0][2], this.matrix.mat[1][2]);
+};
 
 module.exports = Transform;
