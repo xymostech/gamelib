@@ -1,18 +1,23 @@
-var Class = require('../Class');
-var Vector2 = require('../math/Vector2');
-var utils = require('../utils');
+var Eventer = require('../Eventer');
 var Transform = require('../math/Transform');
+var Vector2 = require('../math/Vector2');
 
 var defaults = require('../defaults');
+var utils = require('../utils');
 
-var Positionable = Class.extend({
+var Positionable = Eventer.extend({
     init: function positionableInit(options) {
         options = defaults(options, {
             position: new Vector2(0, 0),
             rotation: 0
         });
 
-        this.position = options.position;
+        if (options.x || options.y) {
+            this.position = new Vector2(options.x || 0, options.y || 0);
+        } else {
+            this.position = options.position;
+        }
+
         this.rotation = options.rotation;
     },
 
@@ -55,10 +60,11 @@ var Parent = Positionable.extend({
     removeChild: function objectRemoveChild(child, force) {
         if (!this.isUpdating) {
             var self = this;
-            utils.each(this.children, function(i, ch) {
+            utils.each(this.children, function eachChild(i, ch) {
                 if (child === ch) {
                     child.parent = null;
-                    self.children.slice(i, 1);
+                    self.children.splice(i, 1);
+                    return false;
                 }
             });
         } else {
@@ -66,30 +72,36 @@ var Parent = Positionable.extend({
         }
     },
 
-    update: function parentUpdate() {
-        this._super.apply(this, arguments);
+    update: function parentUpdate(timeDelta) {
+        this._super(timeDelta)
 
         this.isUpdating = true;
 
-        var args = arguments;
-        utils.each(this.children, function(i, child) {
-            child.update.apply(child, args);
+        utils.each(this.children, function updateEachChild(i, child) {
+            child.update(timeDelta);
         });
 
         this.isUpdating = false;
 
         var self = this;
-        utils.each(this.delayedRemove, function(i, toRemove) {
+        utils.each(this.delayedRemove, function removeChildren(i, toRemove) {
             self.removeChild(toRemove);
         });
+        this.delayedRemove = [];
     },
 
-    draw: function parentDraw(transform, debug) {
-        transform = transform.transform(this.getLocalTransform());
+    draw: function parentDraw(ctx, transform, debug) {
+        var childTransform = transform.transform(this.getLocalTransform());
 
-        utils.each(this.children, function(i, child) {
-            child.draw(transform, debug);
+        utils.each(this.children, function drawEachChild(i, child) {
+            child.draw(ctx, childTransform, debug);
         });
+
+        var myTransform = new Transform(
+            childTransform.getTranslation(),
+            -childTransform.getRotation());
+
+        return myTransform;
     },
 
     getGlobalTransform: function objectGetGlobalTransform() {
