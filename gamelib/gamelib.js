@@ -70,6 +70,25 @@ var setup = function gameSetup(canvas, options) {
     return new Game(canvas, options);
 };
 
+window.g = {};
+
+window.g.Class = require('./Class');
+window.g.defaults = require('./defaults');
+window.g.Eventer = require('./Eventer');
+window.g.logger = require('./logger');
+window.g.time = require('./time');
+window.g.utils = require('./utils');
+
+window.g.math = {};
+window.g.math.Matrix = require('./math/Matrix');
+window.g.math.Transform = require('./math/Transform');
+window.g.math.Vector2 = require('./math/Vector2');
+
+window.g.object = {};
+window.g.object.Object = require('./object/Object')
+window.g.object.Rectangle = require('./object/Rectangle');
+window.g.object.Circle = require('./object/Circle');
+
 module.exports = {
     setup: setup
 };
