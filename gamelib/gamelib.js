@@ -1,18 +1,25 @@
 var defaults = require('./defaults');
 var getTime = require('./time');
 var logger = require('./logger');
+var utils = require('./utils');
+var GameObject = require('./object/Object');
+var Keys = require('./Keys');
 
-window.Class = require('./Class');
-window.gameObject = require('./object/Object');
+function Game(canvas, options) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext("2d");
 
-function Game(context, options) {
-    this.ctx = context;
     this.options = options;
 
-    this.fps_timer = getTime();
-    this.fps_counter = 0;
+    this.fpsTimer = getTime();
+    this.fpsCounter = 0;
+    this.lastTime = getTime();
 
     this.loopRequestId = null;
+
+    this.keys = new Keys(canvas);
+
+    this.root = new GameObject();
 }
 
 Game.prototype.start = function start() {
@@ -24,19 +31,25 @@ Game.prototype._loop = function loop(timeNow) {
     this.loopRequestId = null;
 
     this.fps_counter++;
-    if (timeNow - this.fps_timer > 1000) {
-        logger(this.fps_counter + " frames per second");
-        this.fps_counter = 0;
-        this.fps_timer += 1000;
+    if (timeNow - this.fpsTimer > 1000) {
+        //logger(this.fpsCounter + " frames per second");
+        this.fpsCounter = 0;
+        this.fpsTimer += 1000;
     }
 
-    this.ctx.fillStyle = this.options.backgroundColor;
-    this.ctx.fillRect(
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.clearRect(
         this.options.offsetX,
         this.options.offsetY,
         this.options.screenWidth,
         this.options.screenHeight);
 
+    var timeDelta = (timeNow - this.lastTime) / 1000.0;
+
+    this.root.update(timeDelta);
+    this.root.draw(this.ctx, this.root.getLocalTransform(), false);
+
+    this.lastTime = timeNow;
     this.loopRequestId = window.requestAnimationFrame(
         Game.prototype._loop.bind(this));
 };
@@ -45,9 +58,7 @@ window.gameStop = function gameStop() {
     window.requestAnimationFrame = function() {};
 };
 
-var setup = function(canvas, options) {
-    var context = canvas.getContext("2d");
-
+var setup = function gameSetup(canvas, options) {
     options = defaults(options, {
         offsetX: 0,
         offsetY: 0,
@@ -56,7 +67,7 @@ var setup = function(canvas, options) {
         backgroundColor: "#000"
     });
 
-    return new Game(context, options);
+    return new Game(canvas, options);
 };
 
 module.exports = {
