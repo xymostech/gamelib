@@ -1,4 +1,4 @@
-var each = function(map, callback) {
+function each(map, callback) {
     for (var k in map) {
         if (map.hasOwnProperty(k)) {
             var result = callback(k, map[k]);
