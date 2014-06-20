@@ -83,6 +83,7 @@ window.g.math = {};
 window.g.math.Matrix = require('./math/Matrix');
 window.g.math.Transform = require('./math/Transform');
 window.g.math.Vector2 = require('./math/Vector2');
+window.g.math.random = require('./math/random');
 
 window.g.object = {};
 window.g.object.Object = require('./object/Object')
