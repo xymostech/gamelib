@@ -10,8 +10,13 @@ function randomIntRange(low, high) {
     return Math.floor(randomFloatRange(low, high + 1));
 }
 
+function randomBool() {
+    return random() < 0.5;
+}
+
 module.exports = {
     random: random,
     randomFloatRange: randomFloatRange,
-    randomIntRange: randomIntRange
+    randomIntRange: randomIntRange,
+    randomBool: randomBool
 };
