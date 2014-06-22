@@ -4,6 +4,7 @@ var logger = require('./logger');
 var utils = require('./utils');
 var GameObject = require('./object/Object');
 var Keys = require('./Keys');
+var Timer = require('./Timer');
 
 function Game(canvas, options) {
     this.canvas = canvas;
@@ -18,6 +19,8 @@ function Game(canvas, options) {
     this.loopRequestId = null;
 
     this.keys = new Keys(canvas);
+    
+    this.mainTimer = new Timer();
 
     this.root = new GameObject();
 }
@@ -78,6 +81,7 @@ window.g.Eventer = require('./Eventer');
 window.g.logger = require('./logger');
 window.g.time = require('./time');
 window.g.utils = require('./utils');
+window.g.Timer = require('./Timer');
 
 window.g.math = {};
 window.g.math.Matrix = require('./math/Matrix');

@@ -6,7 +6,7 @@ var Eventer = Class.extend({
     init: function eventerInit(options) {
         this.eventToHandlers = {};
         this.idToHandler = {};
-        this.lastHandlerId = 1;
+        this.lastHandlerId = 0;
     },
 
     on: function eventerOn(event, callback) {

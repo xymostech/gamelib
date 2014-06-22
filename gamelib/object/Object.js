@@ -1,12 +1,14 @@
-var Eventer = require('../Eventer');
+var Timer = require('../Timer');
 var Transform = require('../math/Transform');
 var Vector2 = require('../math/Vector2');
 
 var defaults = require('../defaults');
 var utils = require('../utils');
 
-var Positionable = Eventer.extend({
+var Positionable = Timer.extend({
     init: function positionableInit(options) {
+        this._super(options);
+
         options = defaults(options, {
             position: new Vector2(0, 0),
             rotation: 0
@@ -32,10 +34,6 @@ var Positionable = Eventer.extend({
     getLocalTransform: function objectGetLocalTransform() {
         return new Transform(this.position, this.rotation);
     },
-
-    update: function positionableUpdate() {},
-
-    draw: function positionableDraw() {}
 });
 
 var Parent = Positionable.extend({
@@ -73,7 +71,7 @@ var Parent = Positionable.extend({
     },
 
     update: function parentUpdate(timeDelta) {
-        this._super(timeDelta)
+        this._super(timeDelta);
 
         this.isUpdating = true;
 
