@@ -15,11 +15,11 @@ var Eventer = require('./Eventer');
 var Timer = Eventer.extend({
     init: function timerInit(options) {
         this._super(options);
-        
+
         this.timers = [];
         this.timerId = 0;
     },
-    
+
     /**
      * Adds a timing callback with the specified options. Returns an id which
      * can be used to stop the timer with `stopTimer`.
@@ -33,7 +33,7 @@ var Timer = Eventer.extend({
      * the event
      * @return {int} An id to be passed to `stopTimer`
      */
-    
+
     addTimer: function timerAddTimer(timeout, name, repeat, func) {
         var id = this.timerId++;
 
@@ -44,14 +44,14 @@ var Timer = Eventer.extend({
             name: name,
             repeat: repeat
         });
-        
+
         if (func !== undefined) {
             this.on(name, func);
         }
-        
+
         return id;
     },
-    
+
     /**
      * Adds a non-repeating timer. Shortcut for `addTimer` with `repeat =
      * false`.
@@ -64,7 +64,7 @@ var Timer = Eventer.extend({
      * the event
      * @return {int} An id to be passed to `stopTimer`
      */
-    
+
     after: function timerAfter(timeout, name, func) {
         return this.addTimer(timeout, name, false, func);
     },
@@ -80,18 +80,18 @@ var Timer = Eventer.extend({
      * the event
      * @return {int} An id to be passed to `stopTimer`
      */
-    
+
     every: function timerEvery(timeout, name, func) {
         return this.addTimer(timeout, name, true, func);
     },
-    
+
     /**
      * Stops a timer identified by an id.
      *
      * @method stopTimer
      * @param {int} id Id of the timer to stop
      */
-    
+
     stopTimer: function timerStopTimer(id) {
         for (var i = this.timers.length - 1; i >= 0; i--) {
             if (this.timers[i].id === id) {
@@ -99,7 +99,7 @@ var Timer = Eventer.extend({
             }
         }
     },
-    
+
     /**
      * Updates the timer the specified amount of time. Note that the timer
      * doesn't update automatically, and needs to be manually updated to make
@@ -127,7 +127,7 @@ var Timer = Eventer.extend({
 
             if (timer.time <= 0) {
                 this.trigger(timer.name);
-                
+
                 if (timer.repeat) {
                     timer.time = timer.timeout + timer.time;
                 } else {

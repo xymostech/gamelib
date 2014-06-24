@@ -14,11 +14,11 @@ var utils = require('./utils');
 
 var Eventer = Class.extend({
     init: function eventerInit(options) {
-        this.eventToHandlers = {};
-        this.idToHandler = {};
-        this.lastHandlerId = 0;
+        this._eventToHandlers = {};
+        this._idToHandler = {};
+        this._lastHandlerId = 0;
     },
-    
+
     /**
      * Add a handler for a specific event in the form of a callback. Returns an
      * id that can be used to remove the handler with `removeHandler`.
@@ -33,8 +33,7 @@ var Eventer = Class.extend({
      */
 
     on: function eventerOn(event, callback) {
-        var id = this.lastHandlerId;
-        this.lastHandlerId++;
+        var id = this._lastHandlerId++;
 
         var handler = {
             id: id,
@@ -42,16 +41,16 @@ var Eventer = Class.extend({
             callback: callback
         };
 
-        if (!this.eventToHandlers[event]) {
-            this.eventToHandlers[event] = [];
+        if (!this._eventToHandlers[event]) {
+            this._eventToHandlers[event] = [];
         }
 
-        this.eventToHandlers[event].push(handler);
-        this.idToHandler[id] = handler;
+        this._eventToHandlers[event].push(handler);
+        this._idToHandler[id] = handler;
 
         return id;
     },
-    
+
     /**
      * Trigger a specific event, calling the callbacks for that event with the
      * specified data.
@@ -62,30 +61,30 @@ var Eventer = Class.extend({
      */
 
     trigger: function eventerTrigger(event, data) {
-        if (this.eventToHandlers[event]) {
-            utils.each(this.eventToHandlers[event], function(i, handler) {
+        if (this._eventToHandlers[event]) {
+            utils.each(this._eventToHandlers[event], function(i, handler) {
                 handler.callback(data);
             });
         }
     },
-    
+
     /**
      * Removes a handler using the id received from `.on`.
-     * 
+     *
      * @method removeHandler
      * @param {Int} handlerId The handler to remove.
      */
 
     removeHandler: function eventerRemoveHandler(handlerId) {
-        var handler = this.idToHandler[handlerId];
+        var handler = this._idToHandler[handlerId];
         if (handler) {
             var j = null;
-            utils.each(this.eventToHandlers[handler.event], function(i, h) {
+            utils.each(this._eventToHandlers[handler.event], function(i, h) {
                 if (h === handler) {
                     j = i;
                 }
             });
-            this.eventToHandlers[handler.event].splice(j, 1);
+            this._eventToHandlers[handler.event].splice(j, 1);
         }
     }
 });

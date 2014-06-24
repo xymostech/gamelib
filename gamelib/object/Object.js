@@ -29,7 +29,7 @@ var Positionable = Timer.extend({
         this.position = options.position;
         this.rotation = options.rotation;
     },
-    
+
     /**
      * Moves this opbject to a given position
      *
@@ -40,7 +40,7 @@ var Positionable = Timer.extend({
     moveTo: function objectMoveTo(position) {
         this.position = position;
     },
-    
+
     /**
      * Rotates the object to a given rotation
      *
@@ -51,7 +51,7 @@ var Positionable = Timer.extend({
     rotateTo: function objectRotateTo(rotation) {
         this.rotation = rotation;
     },
-    
+
     /**
      * Returns the local transformation of this object
      *

@@ -1,10 +1,10 @@
 var defaults = require('./defaults');
-var getTime = require('./time');
-var logger = require('./logger');
-var utils = require('./utils');
 var GameObject = require('./object/Object');
+var getTime = require('./time');
 var Keys = require('./Keys');
+var logger = require('./logger');
 var Timer = require('./Timer');
+var utils = require('./utils');
 
 /**
  * The main library, provides classes for running games. Also performs setup
@@ -38,9 +38,9 @@ function Game(canvas, options) {
     this._lastTime = getTime();
 
     this._loopRequestId = null;
-    
+
     this._backgroundColor = options.backgroundColor;
-    
+
     /**
      * The main keyboard interface. Keyboard events should be attached to this.
      *
@@ -49,7 +49,7 @@ function Game(canvas, options) {
      */
 
     this.keys = new Keys();
-    
+
     /**
      * The main timer instance. Other timers can be used, but this provides a
      * global and persistent instance.
@@ -59,7 +59,7 @@ function Game(canvas, options) {
      */
 
     this.timer = new Timer();
-    
+
     /**
      * The root game object. Objects to be updated and drawn should be added as
      * children to this object. It is a default object, and doesn't do any
@@ -70,16 +70,16 @@ function Game(canvas, options) {
      */
 
     this.root = new GameObject();
-   
+
     /**
      * The width of the screen.
      *
      * @property screenHeight
      * @type int
      */
- 
+
     this.screenHeight = this._canvas.height;
-    
+
     /**
      * The height of the screen.
      *
@@ -87,9 +87,9 @@ function Game(canvas, options) {
      * @type int
      */
     this.screenWidth = this._canvas.width;
-    
+
     this._justFocused = false;
-    
+
     /*
      * Listen for focus events on the window. This is used to ignore rAF frames
      * after switching away from tabs and back.
@@ -101,7 +101,7 @@ function Game(canvas, options) {
 
 /**
  * Starts the game, which mostly entails starting the main loop.
- * 
+ *
  * @method start
  */
 
@@ -123,7 +123,7 @@ Game.prototype._loop = function loop(timeNow) {
     }
 
     var timeDelta = (timeNow - this._lastTime) / 1000.0;
-    
+
     if (!this._justFocused) {
         this.root.update(timeDelta);
         this.timer.update(timeDelta);
