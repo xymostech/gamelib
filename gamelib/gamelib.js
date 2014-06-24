@@ -16,7 +16,7 @@ function Game(canvas, options) {
     this.fpsCounter = 0;
     this.lastTime = getTime();
 
-    this.loopRequestId = null;
+    this._loopRequestId = null;
 
     this.keys = new Keys(canvas);
     
@@ -26,12 +26,13 @@ function Game(canvas, options) {
 }
 
 Game.prototype.start = function start() {
-    this.loopRequestId = window.requestAnimationFrame(
+    this._loopRequestId = window.requestAnimationFrame(
         Game.prototype._loop.bind(this));
 };
 
 Game.prototype._loop = function loop(timeNow) {
-    this.loopRequestId = null;
+    this._loopRequestId = null;
+
 
     this.fps_counter++;
     if (timeNow - this.fpsTimer > 1000) {
@@ -53,7 +54,7 @@ Game.prototype._loop = function loop(timeNow) {
     this.root.draw(this.ctx, this.root.getLocalTransform(), false);
 
     this.lastTime = timeNow;
-    this.loopRequestId = window.requestAnimationFrame(
+    this._loopRequestId = window.requestAnimationFrame(
         Game.prototype._loop.bind(this));
 };
 
