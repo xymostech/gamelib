@@ -26,6 +26,14 @@ function Game(canvas, options) {
     
     this.screenHeight = this.canvas.height;
     this.screenWidth = this.canvas.width;
+    
+    this._justFocused = false;
+    
+    var parent = this;
+    
+    window.addEventListener("focus", function() {
+        parent._justFocused = true;
+    });
 }
 
 Game.prototype.start = function start() {
@@ -52,8 +60,13 @@ Game.prototype._loop = function loop(timeNow) {
         this.options.screenHeight);
 
     var timeDelta = (timeNow - this.lastTime) / 1000.0;
+    
+    if (!this._justFocused) {
+        this.root.update(timeDelta);
+    } else {
+        this._justFocused = false;
+    }
 
-    this.root.update(timeDelta);
     this.root.draw(this.ctx, this.root.getLocalTransform(), false);
 
     this.lastTime = timeNow;
