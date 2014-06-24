@@ -23,6 +23,9 @@ function Game(canvas, options) {
     this.mainTimer = new Timer();
 
     this.root = new GameObject();
+    
+    this.screenHeight = this.canvas.height;
+    this.screenWidth = this.canvas.width;
 }
 
 Game.prototype.start = function start() {
