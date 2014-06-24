@@ -68,31 +68,75 @@ var codeToShiftKey = {
 var shiftKey = 16;
 var controlKey = 17;
 
+/**
+ * Class for interacting with and reading keyboard inputs. Inherits from
+ * Eventer, so key inputs are read using events.
+ *
+ * You can load a control set, which associates keys with specific event names.
+ * This could be used for something like a configurable keymap.
+ *
+ * There are two different kinds of events, key events and control events. Keys
+ * are events send by normal keys pressed, and control events are sent when keys
+ * in the control set are pressed. Key names are found in this file.
+ *
+ * Event names:
+ * - `key-[key]`: Key events (triggered on press)
+ * - `key-[key]-down`: Key events upon press
+ * - `key-[key]-up`: Key events upon release
+ * - `control-[control]`: Control events (triggered on press)
+ * - `control-[control]-down`: Controll events upon press
+ * - `control-[control]-up`: Control events upon release
+ *
+ * If you register an event which consists of a key while shift is being
+ * pressed, it will only register while shift is pressed (so `key-colon` will
+ * only trigger when shift and semicolon are pressed, while `key-colon` will
+ * trigger when semicolon is pressed regardless of the shift key.
+ *
+ * The data object sent to the event callback has the format:
+ *
+ *     {
+ *         modifiers: {
+ *             shift: [true|false]
+ *             control: [true|false]
+ *         },
+ *         keyCode: [int],
+ *         name: [string]
+ *     }
+ *
+ * Currently, this class prevents the default actions when keys are pressed.
+ * This prevents unintended things (like the page scrolling when space is
+ * pressed) but makes it annoying to use sometimes (like using the developer
+ * tools or ctrl-L).
+ *
+ * @class Keys
+ * @constructor
+ */
 var Keys = Eventer.extend({
-    init: function keyInit(canvas) {
+    init: function keyInit() {
         this._super();
 
-        this.canvas = canvas;
-
-        this.keyMap = {};
+        this._keyMap = {};
 
         this.controlSet = {};
 
-        window.addEventListener("keydown", this.onKeyDown.bind(this));
-        window.addEventListener("keyup", this.onKeyUp.bind(this));
-    },
+        /*
+         * Note that we listen at the window, so the game itself doesn't need to
+         * be selected, which can interfere with other things on the page
+         */
+        window.addEventListener("keydown", this._onKeyDown.bind(this));
+        window.addEventListener("keyup", this._onKeyUp.bind(this)); },
 
-    onKeyDown: function keysOnKeyDown(event) {
+    _onKeyDown: function keysOnKeyDown(event) {
         event.preventDefault();
 
         var keyCode = event.keyCode;
 
-        if (this.keyMap[keyCode]) {
+        if (this._keyMap[keyCode]) {
             return;
         }
-        this.keyMap[keyCode] = true;
+        this._keyMap[keyCode] = true;
 
-        this.forEachKey(keyCode, function(key, data) {
+        this._forEachKey(keyCode, function(key, data) {
             this.trigger("key-" + key + "-down", data);
             this.trigger("key-" + key, data);
         }, function(key, data) {
@@ -101,33 +145,33 @@ var Keys = Eventer.extend({
         });
     },
 
-    onKeyUp: function keysOnKeyUp(event) {
+    _onKeyUp: function keysOnKeyUp(event) {
         event.preventDefault();
 
         var keyCode = event.keyCode;
 
-        if (!this.keyMap[keyCode]) {
+        if (!this._keyMap[keyCode]) {
             return;
         }
-        this.keyMap[keyCode] = false;
+        this._keyMap[keyCode] = false;
 
-        this.forEachKey(keyCode, function(key, data) {
+        this._forEachKey(keyCode, function(key, data) {
             this.trigger("key-" + key + "-up", data);
         }, function(key, data) {
             this.trigger("control-" + key + "-up", data);
         });
     },
 
-    forEachKey: function keysForEachKey(keyCode, keyCallback, controlCallback) {
-        var shiftPressed = !!this.keyMap[shiftKey];
+    _forEachKey: function keysForEachKey(keyCode, keyCallback, controlCallback) {
+        var shiftPressed = !!this._keyMap[shiftKey];
 
-        var keys = this.getKeyNames(keyCode, shiftPressed)
-        var controls = this.getControlNames(keyCode, shiftPressed);
+        var keys = this._getKeyNames(keyCode, shiftPressed)
+        var controls = this._getControlNames(keyCode, shiftPressed);
 
         var data = {
             modifiers: {
-                shift: !!this.keyMap[shiftKey],
-                control: !!this.keyMap[controlKey]
+                shift: !!this._keyMap[shiftKey],
+                control: !!this._keyMap[controlKey]
             },
             keyCode: keyCode,
             name: keys[0]
@@ -143,7 +187,7 @@ var Keys = Eventer.extend({
         });
     },
 
-    getKeyNames: function keysGetKeyNames(keyCode, shiftPressed) {
+    _getKeyNames: function keysGetKeyNames(keyCode, shiftPressed) {
         var keys = [];
 
         if (shiftPressed) {
@@ -166,22 +210,28 @@ var Keys = Eventer.extend({
         return keys;
     },
 
-    getControlNames: function keysGetControlNames(keyCode, shiftPressed) {
-        var keys = this.getKeyNames(keyCode, shiftPressed);
+    _getControlNames: function keysGetControlNames(keyCode, shiftPressed) {
+        var keys = this._getKeyNames(keyCode, shiftPressed);
         var controls = [];
 
         var self = this;
         utils.each(keys, function(i, key) {
-            if (self.controlSet[key]) {
-                controls.push(self.controlSet[key]);
+            if (self._controlSet[key]) {
+                controls.push(self._controlSet[key]);
             }
         });
 
         return controls;
     },
 
+    /**
+     * Set the control set to be used
+     *
+     * @method setControlSet
+     * @param {Object} controlSet Object mapping from key names to control names
+     */
     setControlSet: function keysSetControlSet(controlSet) {
-        this.controlSet = controlSet;
+        this._controlSet = controlSet;
     }
 });
 

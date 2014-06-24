@@ -1,4 +1,5 @@
-/* Simple JavaScript Inheritance
+/*
+ * Simple JavaScript Inheritance
  * By John Resig http://ejohn.org/
  * Modified by Emily Eisenberg
  * MIT Licensed.
@@ -6,10 +7,21 @@
 // Inspired by base2 and Prototype
 var initializing = false;
 
-// The base Class implementation (does nothing)
+/**
+ * The base Class implementation (does nothing)
+ *
+ * @class Class
+ * @constructor
+ */
 var Class = function Class(){};
 
-// Create a new Class that inherits from this class
+/**
+ * Create a new Class that inherits from this class
+ *
+ * @method extend
+ * @param {Object} prop The methods of the new class
+ * @returns {Class} The newly created class
+ */
 Class.extend = function(prop) {
     var _super = this.prototype;
 

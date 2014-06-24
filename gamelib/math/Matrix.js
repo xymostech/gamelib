@@ -1,3 +1,12 @@
+/**
+ * A matrix class with support for basic operations.
+ *
+ * @class Matrix
+ * @constructor
+ * @param {int} row The number of rows
+ * @param {int} col The number of columns
+ */
+
 function Matrix(row, col) {
     this.row = row;
     this.col = col;
@@ -13,6 +22,14 @@ function Matrix(row, col) {
     }
 }
 
+/**
+ * Add a matrix to another matrix
+ *
+ * @method add
+ * @param {Matrix} other The matrix to add with this one
+ * @return {Matrix} A new matrix, which is the sum of this one and the other one
+ */
+
 Matrix.prototype.add = function matrixAdd(other) {
     if (this.row !== other.row || this.col !== other.col) {
         throw new Error("Invalid dimensions for matrix addition");
@@ -27,7 +44,15 @@ Matrix.prototype.add = function matrixAdd(other) {
     return ret;
 };
 
-// RowxN * NxCol -> RowxCol
+/**
+ * Multiplies two matrices together using standard matrix multiplication
+ *
+ * @method mult
+ * @param {Matrix} other The matrix to multiply with this one
+ * @return {Matrix} A new matrix, which is the product of this one and the other
+ * one
+ */
+
 Matrix.prototype.mult = function matrixMult(other) {
     var row = this.row;
     var col = other.col;
@@ -48,6 +73,12 @@ Matrix.prototype.mult = function matrixMult(other) {
     }
     return ret;
 };
+
+/**
+ * Prints out the matrix to the console, for easy debugging
+ *
+ * @method print
+ */
 
 Matrix.prototype.print = function matrixPrint() {
     for (var i = 0; i < this.row; i++) {

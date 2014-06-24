@@ -7,7 +7,8 @@ var Keys = require('./Keys');
 var Timer = require('./Timer');
 
 /**
- * The main library, provides functions for running games 
+ * The main library, provides classes for running games. Also performs setup
+ * of the global `g` object.
  *
  * @module gamelib
  */
@@ -18,38 +19,94 @@ var Timer = require('./Timer');
  *
  * @class Game
  * @constructor
+ * @param {Canvas} canvas The canvas this game will be drawn in
+ * @param {Object} [options]
+ * @param {String|null} [options.backgroundColor] The CSS color the background
+ * will be blanked to before drawing. If set to `null`, the screen will be
+ * blanked to white, but it will occur much faster than using `"#fff"`
  */
 function Game(canvas, options) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    options = defaults(options, {
+        backgroundColor: null
+    });
 
-    this.options = options;
+    this._canvas = canvas;
+    this._ctx = canvas.getContext("2d");
 
-    this.fpsTimer = getTime();
-    this.fpsCounter = 0;
-    this.lastTime = getTime();
+    this._fpsTimer = getTime();
+    this._fpsCounter = 0;
+    this._lastTime = getTime();
 
     this._loopRequestId = null;
-
-    this.keys = new Keys(canvas);
     
-    this.mainTimer = new Timer();
+    this._backgroundColor = options.backgroundColor;
+    
+    /**
+     * The main keyboard interface. Keyboard events should be attached to this.
+     *
+     * @property keys
+     * @type Keys
+     */
+
+    this.keys = new Keys();
+    
+    /**
+     * The main timer instance. Other timers can be used, but this provides a
+     * global and persistent instance.
+     *
+     * @property timer
+     * @type Timer
+     */
+
+    this.timer = new Timer();
+    
+    /**
+     * The root game object. Objects to be updated and drawn should be added as
+     * children to this object. It is a default object, and doesn't do any
+     * drawing of its own
+     *
+     * @property root
+     * @type GameObject
+     */
 
     this.root = new GameObject();
+   
+    /**
+     * The width of the screen.
+     *
+     * @property screenHeight
+     * @type int
+     */
+ 
+    this.screenHeight = this._canvas.height;
     
-    this.screenHeight = this.canvas.height;
-    this.screenWidth = this.canvas.width;
+    /**
+     * The height of the screen.
+     *
+     * @property screenWidth
+     * @type int
+     */
+    this.screenWidth = this._canvas.width;
     
     this._justFocused = false;
     
-    var parent = this;
-    
+    /*
+     * Listen for focus events on the window. This is used to ignore rAF frames
+     * after switching away from tabs and back.
+     */
     window.addEventListener("focus", function() {
-        parent._justFocused = true;
-    });
+        this._justFocused = true;
+    }.bind(this));
 }
 
+/**
+ * Starts the game, which mostly entails starting the main loop.
+ * 
+ * @method start
+ */
+
 Game.prototype.start = function start() {
+    /* Start the first loop */
     this._loopRequestId = window.requestAnimationFrame(
         Game.prototype._loop.bind(this));
 };
@@ -57,50 +114,43 @@ Game.prototype.start = function start() {
 Game.prototype._loop = function loop(timeNow) {
     this._loopRequestId = null;
 
-
+    /* Calculate the number of fps over the last second */
     this.fps_counter++;
-    if (timeNow - this.fpsTimer > 1000) {
-        //logger(this.fpsCounter + " frames per second");
-        this.fpsCounter = 0;
-        this.fpsTimer += 1000;
+    if (timeNow - this._fpsTimer > 1000) {
+        //logger(this._fpsCounter + " frames per second");
+        this._fpsCounter = 0;
+        this._fpsTimer += 1000;
     }
 
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.clearRect(
-        this.options.offsetX,
-        this.options.offsetY,
-        this.options.screenWidth,
-        this.options.screenHeight);
-
-    var timeDelta = (timeNow - this.lastTime) / 1000.0;
+    var timeDelta = (timeNow - this._lastTime) / 1000.0;
     
     if (!this._justFocused) {
         this.root.update(timeDelta);
+        this.timer.update(timeDelta);
     } else {
         this._justFocused = false;
     }
 
-    this.root.draw(this.ctx, this.root.getLocalTransform(), false);
+    /* Clear the screen */
+    this._ctx.setTransform(1, 0, 0, 1, 0, 0);
+    if (this._backgroundColor === null) {
+        /* We use clearRect if possible because it is much faster */
+        this._ctx.clearRect(0, 0, this.screenWidth, this.screenHeight);
+    } else {
+        this._ctx.fillStyle = this._backgroundColor;
+        this._ctx.fillRect(0, 0, this.screenWidth, this.screenHeight);
+    }
 
-    this.lastTime = timeNow;
+    this.root.draw(this._ctx, this.root.getLocalTransform(), false);
+
+    this._lastTime = timeNow;
+    /* Start the next loop */
     this._loopRequestId = window.requestAnimationFrame(
         Game.prototype._loop.bind(this));
 };
 
 window.gameStop = function gameStop() {
     window.requestAnimationFrame = function() {};
-};
-
-var setup = function gameSetup(canvas, options) {
-    options = defaults(options, {
-        offsetX: 0,
-        offsetY: 0,
-        screenHeight: canvas.height,
-        screenWidth: canvas.width,
-        backgroundColor: "#000"
-    });
-
-    return new Game(canvas, options);
 };
 
 window.g = {};
@@ -125,5 +175,5 @@ window.g.object.Rectangle = require('./object/Rectangle');
 window.g.object.Circle = require('./object/Circle');
 
 module.exports = {
-    setup: setup
+    Game: Game
 };
