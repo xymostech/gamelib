@@ -1,0 +1,9 @@
+{
+    "name": "gamelib",
+    "description": "A game library",
+    "version": "0.1",
+    "options": {
+        "outdir": "./static/doc",
+        "paths": ["./gamelib"]
+    }
+}
