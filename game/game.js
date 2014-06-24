@@ -2,7 +2,7 @@ window.addEventListener("load", function() {
     var gamelib = window.gamelib;
 
     var canvas = document.getElementById("game");
-    var game = gamelib.setup(canvas);
+    var game = new gamelib.Game(canvas);
 
     window.game = game;
 
@@ -23,19 +23,19 @@ window.addEventListener("load", function() {
     });
 
     window.a = new Rotater({
-        x: 400, y: 300,
+        position: new g.math.Vector2(400, 300),
         width: 100, height: 100,
         color: "#f00"
     });
 
     window.b = new g.object.Circle({
-        x: 200, y: 0,
+        position: new g.math.Vector2(200, 0),
         radius: 50,
         color: "#0f0"
     });
 
     window.c = new g.object.Rectangle({
-        x: 0, y: 200,
+        position: new g.math.Vector2(0, 200),
         width: 100, height: 100,
         color: "#00f"
     });
