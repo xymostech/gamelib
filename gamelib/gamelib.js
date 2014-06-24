@@ -6,6 +6,19 @@ var GameObject = require('./object/Object');
 var Keys = require('./Keys');
 var Timer = require('./Timer');
 
+/**
+ * The main library, provides functions for running games 
+ *
+ * @module gamelib
+ */
+
+/**
+ * Main class for the game. One of these will be returned to the user when they
+ * start a game.
+ *
+ * @class Game
+ * @constructor
+ */
 function Game(canvas, options) {
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");

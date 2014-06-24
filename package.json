@@ -5,6 +5,7 @@
     "devDependencies": {
         "browserify": "~2.29.1",
         "express": "~3.3.3",
-        "through": "~2.3.4"
+        "through": "~2.3.4",
+        "yuidocjs": "~0.3.45"
     }
 }
