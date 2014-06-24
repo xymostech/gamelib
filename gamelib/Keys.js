@@ -83,6 +83,8 @@ var Keys = Eventer.extend({
     },
 
     onKeyDown: function keysOnKeyDown(event) {
+        event.preventDefault();
+
         var keyCode = event.keyCode;
 
         if (this.keyMap[keyCode]) {
@@ -100,6 +102,8 @@ var Keys = Eventer.extend({
     },
 
     onKeyUp: function keysOnKeyUp(event) {
+        event.preventDefault();
+
         var keyCode = event.keyCode;
 
         if (!this.keyMap[keyCode]) {
