@@ -1,4 +1,4 @@
-var GameObject = require('./Object');
+var GameObject = require('./GameObject');
 
 var defaults = require('../defaults');
 
@@ -6,7 +6,7 @@ var defaults = require('../defaults');
  * A class for drawing rectangles
  *
  * @class Rectangle
- * @extend Object
+ * @extend GameObject
  * @constructor
  * @param {Object} [options] Options to use, and pass to the `Object` constructor
  * @param {float} [options.width] The width of the rectangle

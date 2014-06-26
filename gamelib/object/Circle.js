@@ -1,10 +1,10 @@
-var GameObject = require('./Object');
+var GameObject = require('./GameObject');
 
 /**
  * A class for drawing circles
  *
  * @class Circle
- * @extend Object
+ * @extend GameObject
  * @constructor
  * @param {Object} options Options to use, and pass to the `Object` constructor
  * @param {float} options.radius The radius of the circle

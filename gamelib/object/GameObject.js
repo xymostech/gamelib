@@ -74,7 +74,7 @@ var Positionable = Timer.extend({
  * transform (the combination of transforms from the root to a child) can be
  * calculated.
  *
- * This class currently acts as the base `Object` class.
+ * This class currently acts as the base `GameObject` class.
  *
  * @class Parent
  * @extend Positionable
@@ -99,7 +99,7 @@ var Parent = Positionable.extend({
      * **Note:** This method will fail if the child already has a parent.
      *
      * @method addChild
-     * @param {Object} child The child to add
+     * @param {GameObject} child The child to add
      */
 
     addChild: function objectAddChild(child) {
@@ -117,7 +117,7 @@ var Parent = Positionable.extend({
      * complete.
      *
      * @method removeChild
-     * @param {Object} child The child to remove
+     * @param {GameObject} child The child to remove
      */
 
     removeChild: function objectRemoveChild(child) {
@@ -219,12 +219,12 @@ var Parent = Positionable.extend({
 /**
  * The base object class, which is exactly the same as the `Parent` class.
  *
- * @class Object
+ * @class GameObject
  * @extend Parent
  * @constructor
  * @param {Object} [options] Options to send to the `Parent` class
  */
 
-var Object = Parent.extend({});
+var GameObject = Parent.extend({});
 
-module.exports = Object;
+module.exports = GameObject;

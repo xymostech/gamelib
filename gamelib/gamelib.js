@@ -1,5 +1,5 @@
 var defaults = require('./defaults');
-var GameObject = require('./object/Object');
+var GameObject = require('./object/GameObject');
 var getTime = require('./time');
 var Keys = require('./Keys');
 var logger = require('./logger');
@@ -20,7 +20,7 @@ var utils = require('./utils');
  * @class Game
  * @constructor
  * @param {Canvas} canvas The canvas this game will be drawn in
- * @param {Object} [options]
+ * @param {GameObject} [options]
  * @param {String|null} [options.backgroundColor] The CSS color the background
  * will be blanked to before drawing. If set to `null`, the screen will be
  * blanked to white, but it will occur much faster than using `"#fff"`
@@ -170,7 +170,7 @@ window.g.math.Vector2 = require('./math/Vector2');
 window.g.math.random = require('./math/random');
 
 window.g.object = {};
-window.g.object.Object = require('./object/Object')
+window.g.object.GameObject = require('./object/GameObject')
 window.g.object.Rectangle = require('./object/Rectangle');
 window.g.object.Circle = require('./object/Circle');
 
